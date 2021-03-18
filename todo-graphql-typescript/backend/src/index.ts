@@ -1,5 +1,5 @@
 import { resolvers } from "./resolvers";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/schema";
 import express from "express";
 
