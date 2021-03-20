@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 // export query method to a function
-export const query = (
+export const query = <ReturnType>(
   text: string,
   params?: any,
   cb?: (err: Error, result: pg.QueryResult<any>) => void
@@ -18,10 +18,10 @@ export const query = (
     return pool.query(text, params, cb);
   } else {
     if (params) {
-      return pool.query(text, params);
+      return pool.query<ReturnType>(text, params);
     } else {
       // no params
-      return pool.query(text);
+      return pool.query<ReturnType>(text);
     }
   }
 };
