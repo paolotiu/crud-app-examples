@@ -2,8 +2,8 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    allItems: [Item!]!
-    item(id: ID!): Item!
+    allItems: [Item]!
+    item(id: ID!): Item
     category(name: String!): Category!
   }
   type Category {

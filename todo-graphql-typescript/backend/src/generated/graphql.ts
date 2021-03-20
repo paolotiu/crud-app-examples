@@ -15,8 +15,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  allItems: Array<Item>;
-  item: Item;
+  allItems: Array<Maybe<Item>>;
+  item?: Maybe<Item>;
   category: Category;
 };
 
@@ -155,8 +155,8 @@ export type ResolversParentTypes = {
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  allItems?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType>;
-  item?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
+  allItems?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
   category?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<QueryCategoryArgs, 'name'>>;
 };
 
