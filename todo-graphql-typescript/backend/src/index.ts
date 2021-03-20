@@ -2,14 +2,23 @@ import { resolvers } from "./resolvers";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/schema";
 import express from "express";
+import { connectDb } from "./db";
 
-const app = express();
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-server.applyMiddleware({ app, path: "/graphql" });
+const startServer = async () => {
+  const app = express();
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
 
-app.listen(4000, () => {
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
-});
+  await connectDb();
+  app.listen(4000, () => {
+    console.log(
+      `🚀 Server ready at http://localhost:4000${server.graphqlPath}`
+    );
+  });
+
+  server.applyMiddleware({ app, path: "/graphql" });
+};
+
+startServer();
