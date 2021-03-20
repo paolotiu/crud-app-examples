@@ -1,3 +1,4 @@
+import { checkQueryResult } from "./util/validateQueryResult";
 import pg, { Pool } from "pg";
 
 const pool = new Pool({
@@ -9,20 +10,12 @@ const pool = new Pool({
 });
 
 // export query method to a function
-export const query = <ReturnType>(
-  text: string,
-  params?: any,
-  cb?: (err: Error, result: pg.QueryResult<any>) => void
-) => {
-  if (cb) {
-    return pool.query(text, params, cb);
+export const query = <ReturnType>(text: string, params?: any) => {
+  if (params) {
+    return checkQueryResult(pool.query<ReturnType>(text, params));
   } else {
-    if (params) {
-      return pool.query<ReturnType>(text, params);
-    } else {
-      // no params
-      return pool.query<ReturnType>(text);
-    }
+    // no params
+    return checkQueryResult(pool.query<ReturnType>(text));
   }
 };
 
