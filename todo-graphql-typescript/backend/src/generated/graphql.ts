@@ -3,6 +3,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -14,14 +15,44 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  helloWorld: Scalars['String'];
-  hey?: Maybe<Role>;
+  allItems: Array<Item>;
+  item: Item;
+  category: Category;
 };
 
-export enum Role {
-  User = 'USER',
-  Admin = 'ADMIN'
-}
+
+export type QueryItemArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCategoryArgs = {
+  name: Scalars['String'];
+};
+
+export type Category = {
+  __typename?: 'Category';
+  name: Scalars['String'];
+  items: Array<Item>;
+};
+
+export type Item = {
+  __typename?: 'Item';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  price: Scalars['Int'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createItem: Item;
+};
+
+
+export type MutationCreateItemArgs = {
+  name: Scalars['String'];
+  price: Scalars['Int'];
+};
 
 
 
@@ -102,25 +133,55 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Role: Role;
+  Category: ResolverTypeWrapper<Category>;
+  Item: ResolverTypeWrapper<Item>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
+  ID: Scalars['ID'];
   String: Scalars['String'];
+  Category: Category;
+  Item: Item;
+  Int: Scalars['Int'];
+  Mutation: {};
   Boolean: Scalars['Boolean'];
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  helloWorld?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hey?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>;
+  allItems?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType>;
+  item?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
+  category?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<QueryCategoryArgs, 'name'>>;
+};
+
+export type CategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  items?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'name' | 'price'>>;
 };
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
+  Category?: CategoryResolvers<ContextType>;
+  Item?: ItemResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
 };
 
 
