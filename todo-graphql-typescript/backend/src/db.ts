@@ -10,12 +10,15 @@ const pool = new Pool({
 });
 
 // export query method to a function
-export const query = <ReturnType>(text: string, params?: any) => {
+export const query = <ReturnType>(
+  textOrQueryConfig: string | pg.QueryConfig,
+  params?: any
+) => {
   if (params) {
-    return checkQueryResult(pool.query<ReturnType>(text, params));
+    return checkQueryResult(pool.query<ReturnType>(textOrQueryConfig, params));
   } else {
     // no params
-    return checkQueryResult(pool.query<ReturnType>(text));
+    return checkQueryResult(pool.query<ReturnType>(textOrQueryConfig));
   }
 };
 
@@ -27,6 +30,14 @@ const initiateDb = async () => {
 
   await query(
     "CREATE TABLE IF NOT EXISTS items(id serial PRIMARY KEY, name text not null, price int not null, category int references categories(id) not null);"
+  );
+
+  await query(
+    `CREATE TABLE IF NOT EXISTS item_in_category(
+      item int references items(id),
+      category int references categories(id),
+      primary key (item, category)
+   )`
   );
 };
 
