@@ -34,9 +34,9 @@ const initiateDb = async () => {
 
   await query(
     `CREATE TABLE IF NOT EXISTS item_in_category(
-      item int references items(id),
-      category int references categories(id),
-      primary key (item, category)
+      itemId int references items(id),
+      categoryId int references categories(id),
+      primary key (itemId, categoryId)
    )`
   );
 };
