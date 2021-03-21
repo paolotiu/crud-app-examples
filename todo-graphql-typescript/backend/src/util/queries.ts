@@ -28,6 +28,7 @@ export const getItemsByName = async (name: string) => {
   return queryResult.rows;
 };
 
+// get category by Id
 export const oneCategoryById = async (id: string) => {
   const queryResult = await query<Category>({
     text: `
@@ -39,6 +40,7 @@ export const oneCategoryById = async (id: string) => {
   return queryResult.rows[0];
 };
 
+// add an item to the category
 export const addItemToCategory = async (itemId: string, categoryId: string) => {
   const queryResult = await query<ItemAndCategoryIDs>({
     text: `
@@ -52,6 +54,7 @@ export const addItemToCategory = async (itemId: string, categoryId: string) => {
   return queryResult.rows[0];
 };
 
+// Ger all items from the category
 export const allItemsFromCategory = async (categoryId: string) => {
   const queryResult = await query<Item>(
     {
