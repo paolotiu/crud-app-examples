@@ -1,4 +1,3 @@
-import { Category } from "./../generated/graphql";
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
