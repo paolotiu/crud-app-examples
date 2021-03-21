@@ -46,12 +46,18 @@ export type Item = {
 export type Mutation = {
   __typename?: 'Mutation';
   createItem: Item;
+  createCategory?: Maybe<Category>;
 };
 
 
 export type MutationCreateItemArgs = {
   name: Scalars['String'];
   price: Scalars['Int'];
+};
+
+
+export type MutationCreateCategoryArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -175,6 +181,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'name' | 'price'>>;
+  createCategory?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'name'>>;
 };
 
 export type Resolvers<ContextType = any> = {

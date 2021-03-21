@@ -48,5 +48,18 @@ export const resolvers: Resolvers = {
 
       return items.rows[0];
     },
+    createCategory: async (_, args) => {
+      const { name } = args;
+      const queryResult = await query<Category>(
+        `
+        INSERT INTO categories(name) 
+        values ($1)
+        RETURNING *
+        `,
+        [name]
+      );
+
+      return queryResult.rows[0];
+    },
   },
 };

@@ -18,5 +18,6 @@ export const typeDefs = gql`
 
   type Mutation {
     createItem(name: String!, price: Int!): Item!
+    createCategory(name: String!): Category
   }
 `;
