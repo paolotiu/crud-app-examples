@@ -9,6 +9,7 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    tracing: true,
   });
 
   await connectDb();
