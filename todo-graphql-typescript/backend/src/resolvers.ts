@@ -3,15 +3,15 @@ import { Category, Item, Resolvers } from "./generated/graphql";
 import { ItemAndCategoryIDs } from "./types/modelTypes";
 import {
   addItemToCategory,
+  allItemsFromCategory,
   oneCategoryById,
   oneItemById,
+  removeItemFromCategory,
 } from "./util/queries";
 
 export const resolvers: Resolvers = {
   Category: {
-    items: ({ id }) => {
-      return [null];
-    },
+    items: ({ id }) => allItemsFromCategory(id),
   },
   ItemAndCategory: {
     item: ({ item_id }) => oneItemById(item_id),
@@ -42,8 +42,8 @@ export const resolvers: Resolvers = {
     createItem: async (_, args) => {
       const { name, price } = args;
       const items = await query<Item>(
-        `INSERT INTO items(name, price, category) 
-           values ($1, $2, 1) 
+        `INSERT INTO items(name, price)  
+           values ($1, $2) 
            RETURNING *
           `,
         [name, price]
@@ -66,5 +66,8 @@ export const resolvers: Resolvers = {
     },
     addItemToCategory: async (_, { itemId, categoryId }) =>
       addItemToCategory(itemId, categoryId),
+
+    removeItemFromCategory: async (_, { itemId, categoryId }) =>
+      removeItemFromCategory(itemId, categoryId),
   },
 };
