@@ -1,6 +1,11 @@
 import { query } from "./db";
 import { Category, Item, Resolvers } from "./generated/graphql";
 import { ItemAndCategoryIDs } from "./types/modelTypes";
+import {
+  addItemToCategory,
+  oneCategoryById,
+  oneItemById,
+} from "./util/queries";
 
 export const resolvers: Resolvers = {
   Category: {
@@ -9,28 +14,8 @@ export const resolvers: Resolvers = {
     },
   },
   ItemAndCategory: {
-    item: async ({ item: id }) => {
-      const queryResult = await query<Item>(
-        `
-      SELECT * FROM items
-      WHERE id = $1
-      `,
-        [id]
-      );
-      const item = queryResult.rows[0];
-
-      return item;
-    },
-    category: async ({ category: id }) => {
-      const queryResult = await query<Category>(
-        `
-        SELECT * FROM categories
-        WHERE id = $1
-        `,
-        [id]
-      );
-      return queryResult.rows[0];
-    },
+    item: ({ item_id }) => oneItemById(item_id),
+    category: ({ category_id }) => oneCategoryById(category_id),
   },
   Query: {
     allItems: async () => {
@@ -40,19 +25,7 @@ export const resolvers: Resolvers = {
 
       return items.rows;
     },
-    item: async (_, args) => {
-      const { id } = args;
-      const queryResult = await query<Item>(
-        `
-      SELECT * FROM items
-      WHERE id = $1
-      `,
-        [id]
-      );
-      const item = queryResult.rows[0];
-
-      return item;
-    },
+    item: async (_, { id }) => oneItemById(id),
     category: async (_, args) => {
       const { name } = args;
       const queryResult = await query<Category>(
@@ -91,18 +64,7 @@ export const resolvers: Resolvers = {
 
       return queryResult.rows[0];
     },
-    addItemToCategory: async (_, args) => {
-      const { categoryId, itemId } = args;
-      const queryResult = await query<ItemAndCategoryIDs>(
-        `
-        INSERT INTO item_in_category (item, category)
-        VALUES ($1, $2)
-        RETURNING *
-      `,
-        [itemId, categoryId]
-      );
-
-      return queryResult.rows[0];
-    },
+    addItemToCategory: async (_, { itemId, categoryId }) =>
+      addItemToCategory(itemId, categoryId),
   },
 };
