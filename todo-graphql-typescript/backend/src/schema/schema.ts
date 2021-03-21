@@ -1,11 +1,7 @@
+import { Category } from "./../generated/graphql";
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
-  type Query {
-    allItems: [Item]!
-    item(id: ID!): Item
-    category(name: String!): Category
-  }
   type Category {
     id: ID!
     name: String!
@@ -21,11 +17,19 @@ export const typeDefs = gql`
     item: Item
     category: Category
   }
+  type Query {
+    allItems: [Item]!
+    item(id: ID!): Item
+    itemsByName(name: String!): [Item]!
+    category(name: String!): Category
+  }
 
   type Mutation {
     createItem(name: String!, price: Int!): Item!
-    createCategory(name: String!): Category
+    deleteItem(id: ID!): Item!
+    createCategory(name: String!): Category!
+    deleteCategory(id: ID!): Category!
     addItemToCategory(itemId: ID!, categoryId: ID!): ItemAndCategory
-    removeItemFromCategory(itemId: ID!, categoryId: ID!): Item
+    removeItemFromCategory(itemId: ID!, categoryId: ID!): Boolean!
   }
 `;

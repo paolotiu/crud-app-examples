@@ -8,7 +8,9 @@
     "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@types/compression": "^1.7.0",
     "apollo-server-express": "^2.21.1",
+    "compression": "^1.7.4",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "morgan": "^1.10.0",
