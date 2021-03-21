@@ -1,22 +1,15 @@
 import { query } from "./db";
 import { Category, Item, Resolvers } from "./generated/graphql";
 import { ItemAndCategoryIDs } from "./types/modelTypes";
-import {
-  addItemToCategory,
-  allItemsFromCategory,
-  getItemsByName,
-  oneCategoryById,
-  oneItemById,
-  removeItemFromCategory,
-} from "./util/queries";
+import * as queries from "./util/queries";
 
 export const resolvers: Resolvers = {
   Category: {
-    items: ({ id }) => allItemsFromCategory(id),
+    items: ({ id }) => queries.allItemsFromCategory(id),
   },
   ItemAndCategory: {
-    item: ({ item_id }) => oneItemById(item_id),
-    category: ({ category_id }) => oneCategoryById(category_id),
+    item: ({ item_id }) => queries.oneItemById(item_id),
+    category: ({ category_id }) => queries.oneCategoryById(category_id),
   },
   Query: {
     allItems: async () => {
@@ -26,7 +19,7 @@ export const resolvers: Resolvers = {
 
       return items.rows;
     },
-    item: async (_, { id }) => oneItemById(id),
+    item: async (_, { id }) => queries.oneItemById(id),
     category: async (_, args) => {
       const { name } = args;
       const queryResult = await query<Category>(
@@ -38,7 +31,7 @@ export const resolvers: Resolvers = {
       );
       return queryResult.rows[0];
     },
-    itemsByName: async (_, { name }) => getItemsByName(name),
+    itemsByName: async (_, { name }) => queries.getItemsByName(name),
   },
   Mutation: {
     createItem: async (_, args) => {
@@ -67,9 +60,10 @@ export const resolvers: Resolvers = {
       return queryResult.rows[0];
     },
     addItemToCategory: async (_, { itemId, categoryId }) =>
-      addItemToCategory(itemId, categoryId),
+      queries.addItemToCategory(itemId, categoryId),
 
     removeItemFromCategory: async (_, { itemId, categoryId }) =>
-      removeItemFromCategory(itemId, categoryId),
+      queries.removeItemFromCategory(itemId, categoryId),
+    deleteCategory: (_, { id }) => queries.deleteCategory(id),
   },
 };

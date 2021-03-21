@@ -71,6 +71,7 @@ export const allItemsFromCategory = async (categoryId: string) => {
   return queryResult.rows;
 };
 
+// Remove an item from the category
 export const removeItemFromCategory = async (
   itemId: string,
   categoryId: string
@@ -86,4 +87,18 @@ export const removeItemFromCategory = async (
   // Return true if a row is affected
   // False if not
   return !!queryResult.rowCount;
+};
+
+// Delete a category
+export const deleteCategory = async (categoryId: string) => {
+  const queryResult = await query<Category>({
+    text: `
+            DELETE FROM categories
+            WHERE id = $1
+            RETURNING *;
+        `,
+    values: [categoryId],
+  });
+
+  return queryResult.rows[0];
 };
