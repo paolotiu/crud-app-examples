@@ -15,18 +15,18 @@ export const oneItemById = async (id: string) => {
   return queryResult.rows[0];
 };
 
-// // Get item(s) by name
-// export const itemsByName = async (name: string) => {
-//   const queryResult = await query<Item>({
-//     text: `
-//             SELECT * FROM items
-//             WHERE name = $1;
-//         `,
-//     values: [name],
-//   });
+// Get item(s) by name
+export const getItemsByName = async (name: string) => {
+  const queryResult = await query<Item>({
+    text: `
+            SELECT * FROM items
+            WHERE name = $1;
+        `,
+    values: [name],
+  });
 
-//   return queryResult.rows;
-// };
+  return queryResult.rows;
+};
 
 export const oneCategoryById = async (id: string) => {
   const queryResult = await query<Category>({

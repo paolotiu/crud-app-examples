@@ -4,6 +4,7 @@ import { ItemAndCategoryIDs } from "./types/modelTypes";
 import {
   addItemToCategory,
   allItemsFromCategory,
+  getItemsByName,
   oneCategoryById,
   oneItemById,
   removeItemFromCategory,
@@ -37,6 +38,7 @@ export const resolvers: Resolvers = {
       );
       return queryResult.rows[0];
     },
+    itemsByName: async (_, { name }) => getItemsByName(name),
   },
   Mutation: {
     createItem: async (_, args) => {

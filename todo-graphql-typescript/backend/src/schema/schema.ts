@@ -19,6 +19,7 @@ export const typeDefs = gql`
   type Query {
     allItems: [Item]!
     item(id: ID!): Item
+    itemsByName(name: String!): [Item]!
     category(name: String!): Category
   }
 
