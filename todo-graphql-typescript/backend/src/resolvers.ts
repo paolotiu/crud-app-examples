@@ -1,5 +1,5 @@
 import { query } from "./db";
-import { Item, Resolvers } from "./generated/graphql";
+import { Category, Item, Resolvers } from "./generated/graphql";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -22,6 +22,17 @@ export const resolvers: Resolvers = {
       const item = queryResult.rows[0];
 
       return item;
+    },
+    category: async (_, args) => {
+      const { name } = args;
+      const queryResult = await query<Category>(
+        `
+        SELECT * FROM categories
+        WHERE name = $1
+       `,
+        [name]
+      );
+      return queryResult.rows[0];
     },
   },
   Mutation: {

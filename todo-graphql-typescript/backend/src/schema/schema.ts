@@ -4,7 +4,7 @@ export const typeDefs = gql`
   type Query {
     allItems: [Item]!
     item(id: ID!): Item
-    category(name: String!): Category!
+    category(name: String!): Category
   }
   type Category {
     name: String!
