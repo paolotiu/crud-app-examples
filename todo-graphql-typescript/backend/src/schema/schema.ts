@@ -7,8 +7,9 @@ export const typeDefs = gql`
     category(name: String!): Category
   }
   type Category {
+    id: ID!
     name: String!
-    items: [Item!]!
+    items: [Item]!
   }
   type Item {
     id: ID!
@@ -16,8 +17,15 @@ export const typeDefs = gql`
     price: Int!
   }
 
+  type ItemAndCategory {
+    item: Item
+    category: Category
+  }
+
   type Mutation {
     createItem(name: String!, price: Int!): Item!
     createCategory(name: String!): Category
+    addItemToCategory(itemId: ID!, categoryId: ID!): ItemAndCategory
+    removeItemFromCategory(itemId: ID!, categoryId: ID!): Item
   }
 `;

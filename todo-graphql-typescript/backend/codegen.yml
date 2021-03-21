@@ -3,6 +3,10 @@ schema: "./src/schema/schema.ts"
 documents: null
 generates:
   src/generated/graphql.ts:
+    config: 
+      useIndexSignature: true
+      mappers:
+        ItemAndCategory: ./src/types/modelTypes#ItemAndCategoryIDs
     plugins:
       - "typescript"
       - "typescript-resolvers"
