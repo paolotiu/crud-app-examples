@@ -3,6 +3,9 @@ schema: "./src/schema/schema.ts"
 documents: null
 generates:
   src/generated/graphql.ts:
+    config: 
+      mappers:
+        ItemAndCategory: ../types/modelTypes#ItemAndCategoryIDs
     plugins:
       - "typescript"
       - "typescript-resolvers"

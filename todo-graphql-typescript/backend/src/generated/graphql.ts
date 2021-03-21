@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { ItemAndCategoryIDs } from '../types/modelTypes';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -15,9 +16,9 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  allItems: Array<Item>;
-  item: Item;
-  category: Category;
+  allItems: Array<Maybe<Item>>;
+  item?: Maybe<Item>;
+  category?: Maybe<Category>;
 };
 
 
@@ -32,8 +33,9 @@ export type QueryCategoryArgs = {
 
 export type Category = {
   __typename?: 'Category';
+  id: Scalars['ID'];
   name: Scalars['String'];
-  items: Array<Item>;
+  items: Array<Maybe<Item>>;
 };
 
 export type Item = {
@@ -43,15 +45,41 @@ export type Item = {
   price: Scalars['Int'];
 };
 
+export type ItemAndCategory = {
+  __typename?: 'ItemAndCategory';
+  item?: Maybe<Item>;
+  category?: Maybe<Category>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createItem: Item;
+  createCategory?: Maybe<Category>;
+  addItemToCategory?: Maybe<ItemAndCategory>;
+  removeItemFromCategory?: Maybe<Item>;
 };
 
 
 export type MutationCreateItemArgs = {
   name: Scalars['String'];
   price: Scalars['Int'];
+};
+
+
+export type MutationCreateCategoryArgs = {
+  name: Scalars['String'];
+};
+
+
+export type MutationAddItemToCategoryArgs = {
+  itemId: Scalars['ID'];
+  categoryId: Scalars['ID'];
+};
+
+
+export type MutationRemoveItemFromCategoryArgs = {
+  itemId: Scalars['ID'];
+  categoryId: Scalars['ID'];
 };
 
 
@@ -138,6 +166,7 @@ export type ResolversTypes = {
   Category: ResolverTypeWrapper<Category>;
   Item: ResolverTypeWrapper<Item>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  ItemAndCategory: ResolverTypeWrapper<ItemAndCategoryIDs>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -150,19 +179,21 @@ export type ResolversParentTypes = {
   Category: Category;
   Item: Item;
   Int: Scalars['Int'];
+  ItemAndCategory: ItemAndCategoryIDs;
   Mutation: {};
   Boolean: Scalars['Boolean'];
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  allItems?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType>;
-  item?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
-  category?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<QueryCategoryArgs, 'name'>>;
+  allItems?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
+  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'name'>>;
 };
 
 export type CategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  items?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType>;
+  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -173,14 +204,24 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ItemAndCategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ItemAndCategory'] = ResolversParentTypes['ItemAndCategory']> = {
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
+  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'name' | 'price'>>;
+  createCategory?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'name'>>;
+  addItemToCategory?: Resolver<Maybe<ResolversTypes['ItemAndCategory']>, ParentType, ContextType, RequireFields<MutationAddItemToCategoryArgs, 'itemId' | 'categoryId'>>;
+  removeItemFromCategory?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<MutationRemoveItemFromCategoryArgs, 'itemId' | 'categoryId'>>;
 };
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Category?: CategoryResolvers<ContextType>;
   Item?: ItemResolvers<ContextType>;
+  ItemAndCategory?: ItemAndCategoryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 };
 
