@@ -1,28 +1,14 @@
-import { Category, Item } from "./../generated/graphql";
-import { query } from "../db";
-import { ItemAndCategoryIDs } from "../types/modelTypes";
+import { Category, Item } from "./../../generated/graphql";
+import { query } from "../../db";
+import { ItemAndCategoryIDs } from "../../types/modelTypes";
+import { createVariablesString } from "../createVariablesString";
 
-// Get the item by Id
-export const oneItemById = async (id: string) => {
-  const queryResult = await query<Item>({
+// get all categories
+export const allCategories = async () => {
+  const queryResult = await query<Category>({
     text: `
-      SELECT * FROM items
-      WHERE id = $1
-      `,
-    values: [id],
-  });
-
-  return queryResult.rows[0];
-};
-
-// Get item(s) by name
-export const getItemsByName = async (name: string) => {
-  const queryResult = await query<Item>({
-    text: `
-            SELECT * FROM items
-            WHERE name = $1;
+            SELECT * FROM categories;   
         `,
-    values: [name],
   });
 
   return queryResult.rows;
@@ -37,6 +23,33 @@ export const oneCategoryById = async (id: string) => {
         `,
     values: [id],
   });
+  return queryResult.rows[0];
+};
+
+// get category by name
+export const oneCategoryByName = async (name: string) => {
+  const queryResult = await query<Category>({
+    text: `
+        SELECT * FROM categories
+        WHERE name = $1
+       `,
+    values: [name],
+  });
+
+  return queryResult.rows[0];
+};
+
+// create category
+export const createCategory = async (name: string) => {
+  const queryResult = await query<Category>({
+    text: `
+        INSERT INTO categories(name) 
+        values ($1)
+        RETURNING *
+        `,
+    values: [name],
+  });
+
   return queryResult.rows[0];
 };
 
@@ -55,19 +68,18 @@ export const addItemToCategory = async (itemId: string, categoryId: string) => {
 };
 
 // Ger all items from the category
-export const allItemsFromCategory = async (categoryId: string) => {
-  const queryResult = await query<Item>(
-    {
-      text: `
-            SELECT * FROM items i 
-            WHERE i.id in (
-                SELECT ic.item_id FROM item_in_category ic
-                WHERE ic.category_id = $1
-            );
+export const allItemsFromCategory = async (ids: string[]) => {
+  const vars = createVariablesString(ids);
+  const queryResult = await query<Item & { category_id: string }>({
+    text: `
+            SELECT iic.category_id, i.id,
+            i.name, i.price
+            FROM item_in_category iic
+            INNER JOIN items i on i.id = iic.item_id
+            WHERE iic.category_id IN (${vars})
         `,
-    },
-    [categoryId]
-  );
+    values: ids,
+  });
   return queryResult.rows;
 };
 
