@@ -20,18 +20,9 @@ export const resolvers: Resolvers = {
       return items.rows;
     },
     item: async (_, { id }) => queries.oneItemById(id),
-    category: async (_, args) => {
-      const { name } = args;
-      const queryResult = await query<Category>(
-        `
-        SELECT * FROM categories
-        WHERE name = $1
-       `,
-        [name]
-      );
-      return queryResult.rows[0];
-    },
     itemsByName: async (_, { name }) => queries.getItemsByName(name),
+    category: async (_, { id }) => queries.oneCategoryById(id),
+    categoryByName: async (_, { name }) => queries.oneCategoryByName(name),
   },
   Mutation: {
     createItem: async (_, args) => {
@@ -46,19 +37,7 @@ export const resolvers: Resolvers = {
 
       return items.rows[0];
     },
-    createCategory: async (_, args) => {
-      const { name } = args;
-      const queryResult = await query<Category>(
-        `
-        INSERT INTO categories(name) 
-        values ($1)
-        RETURNING *
-        `,
-        [name]
-      );
-
-      return queryResult.rows[0];
-    },
+    createCategory: async (_, { name }) => queries.createCategory(name),
     addItemToCategory: async (_, { itemId, categoryId }) =>
       queries.addItemToCategory(itemId, categoryId),
 

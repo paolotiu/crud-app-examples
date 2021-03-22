@@ -40,6 +40,33 @@ export const oneCategoryById = async (id: string) => {
   return queryResult.rows[0];
 };
 
+// get category by name
+export const oneCategoryByName = async (name: string) => {
+  const queryResult = await query<Category>({
+    text: `
+        SELECT * FROM categories
+        WHERE name = $1
+       `,
+    values: [name],
+  });
+
+  return queryResult.rows[0];
+};
+
+// create category
+export const createCategory = async (name: string) => {
+  const queryResult = await query<Category>({
+    text: `
+        INSERT INTO categories(name) 
+        values ($1)
+        RETURNING *
+        `,
+    values: [name],
+  });
+
+  return queryResult.rows[0];
+};
+
 // add an item to the category
 export const addItemToCategory = async (itemId: string, categoryId: string) => {
   const queryResult = await query<ItemAndCategoryIDs>({
