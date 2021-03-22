@@ -1,6 +1,5 @@
 import { query } from "./db";
-import { Category, Item, Resolvers } from "./generated/graphql";
-import { ItemAndCategoryIDs } from "./types/modelTypes";
+import { Item, Resolvers } from "./generated/graphql";
 import * as queries from "./util/queries";
 
 export const resolvers: Resolvers = {
