@@ -24,6 +24,20 @@ export const oneItemById = async (id: string) => {
   return queryResult.rows[0];
 };
 
+// Create item
+export const createItem = async (name: string, price: number) => {
+  const queryResult = await query<Item>({
+    text: `INSERT INTO items(name, price)  
+           values ($1, $2) 
+           RETURNING *
+          `,
+
+    values: [name, price],
+  });
+
+  return queryResult.rows[0];
+};
+
 // Get item(s) by name
 export const getItemsByName = async (name: string) => {
   const queryResult = await query<Item>({

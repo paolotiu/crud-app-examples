@@ -2,6 +2,8 @@ import { Category, Item } from "./../../generated/graphql";
 import { query } from "../../db";
 import { ItemAndCategoryIDs } from "../../types/modelTypes";
 
+// get al
+
 // get category by Id
 export const oneCategoryById = async (id: string) => {
   const queryResult = await query<Category>({

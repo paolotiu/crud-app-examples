@@ -1,5 +1,4 @@
-import { query } from "./db";
-import { Item, Resolvers } from "./generated/graphql";
+import { Resolvers } from "./generated/graphql";
 import * as queries from "./util/queries";
 
 export const resolvers: Resolvers = {
@@ -18,18 +17,7 @@ export const resolvers: Resolvers = {
     categoryByName: async (_, { name }) => queries.oneCategoryByName(name),
   },
   Mutation: {
-    createItem: async (_, args) => {
-      const { name, price } = args;
-      const items = await query<Item>(
-        `INSERT INTO items(name, price)  
-           values ($1, $2) 
-           RETURNING *
-          `,
-        [name, price]
-      );
-
-      return items.rows[0];
-    },
+    createItem: async (_, { name, price }) => queries.createItem(name, price),
     createCategory: async (_, { name }) => queries.createCategory(name),
     addItemToCategory: async (_, { itemId, categoryId }) =>
       queries.addItemToCategory(itemId, categoryId),
