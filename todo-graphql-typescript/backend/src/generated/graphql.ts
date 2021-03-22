@@ -64,6 +64,12 @@ export type QueryCategoryByNameArgs = {
   name: Scalars['String'];
 };
 
+export type CreateItemInput = {
+  name: Scalars['String'];
+  price: Scalars['Int'];
+  category?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createItem: Item;
@@ -76,8 +82,7 @@ export type Mutation = {
 
 
 export type MutationCreateItemArgs = {
-  name: Scalars['String'];
-  price: Scalars['Int'];
+  data: CreateItemInput;
 };
 
 
@@ -192,6 +197,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   ItemAndCategory: ResolverTypeWrapper<ItemAndCategoryIDs>;
   Query: ResolverTypeWrapper<{}>;
+  CreateItemInput: CreateItemInput;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -205,6 +211,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   ItemAndCategory: ItemAndCategoryIDs;
   Query: {};
+  CreateItemInput: CreateItemInput;
   Mutation: {};
   Boolean: Scalars['Boolean'];
 };
@@ -239,7 +246,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'name' | 'price'>>;
+  createItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'data'>>;
   deleteItem?: Resolver<ResolversTypes['Item'], ParentType, ContextType, RequireFields<MutationDeleteItemArgs, 'id'>>;
   createCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'name'>>;
   deleteCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;

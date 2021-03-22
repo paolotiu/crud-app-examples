@@ -40,7 +40,12 @@ export const itemsById = async (ids: string[]) => {
 };
 
 // Create item
-export const createItem = async (name: string, price: number) => {
+export const createItem = async (data: {
+  name: string;
+  price: number;
+  category?: string | null;
+}) => {
+  const { name, price, category } = data;
   const queryResult = await query<Item>({
     text: `INSERT INTO items(name, price)  
            values ($1, $2) 

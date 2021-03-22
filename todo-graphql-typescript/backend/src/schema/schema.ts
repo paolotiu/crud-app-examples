@@ -24,9 +24,14 @@ export const typeDefs = gql`
     category(id: ID!): Category
     categoryByName(name: String!): Category
   }
+  input CreateItemInput {
+    name: String!
+    price: Int!
+    category: String
+  }
 
   type Mutation {
-    createItem(name: String!, price: Int!): Item!
+    createItem(data: CreateItemInput!): Item!
     deleteItem(id: ID!): Item!
     createCategory(name: String!): Category!
     deleteCategory(id: ID!): Category!

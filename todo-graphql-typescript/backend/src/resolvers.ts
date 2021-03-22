@@ -18,7 +18,7 @@ export const resolvers: Resolvers = {
     allCategories: async () => queries.allCategories(),
   },
   Mutation: {
-    createItem: async (_, { name, price }) => queries.createItem(name, price),
+    createItem: async (_, { data }) => queries.createItem(data),
     createCategory: async (_, { name }) => queries.createCategory(name),
     addItemToCategory: async (_, { itemId, categoryId }) =>
       queries.addItemToCategory(itemId, categoryId),
