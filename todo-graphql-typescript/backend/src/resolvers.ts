@@ -12,13 +12,7 @@ export const resolvers: Resolvers = {
     category: ({ category_id }) => queries.oneCategoryById(category_id),
   },
   Query: {
-    allItems: async () => {
-      const items = await query<Item>(`
-        SELECT * FROM items;
-      `);
-
-      return items.rows;
-    },
+    allItems: async () => queries.allItems(),
     item: async (_, { id }) => queries.oneItemById(id),
     itemsByName: async (_, { name }) => queries.getItemsByName(name),
     category: async (_, { id }) => queries.oneCategoryById(id),
