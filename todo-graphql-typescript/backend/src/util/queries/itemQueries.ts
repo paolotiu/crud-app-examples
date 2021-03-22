@@ -1,5 +1,6 @@
 import { Item } from "./../../generated/graphql";
 import { query } from "../../db";
+import { createVariablesString } from "../createVariablesString";
 
 // get all items
 export const allItems = async () => {
@@ -22,6 +23,20 @@ export const oneItemById = async (id: string) => {
   });
 
   return queryResult.rows[0];
+};
+
+// Get items by id
+export const itemsById = async (ids: string[]) => {
+  const vars = createVariablesString(ids);
+  const queryResult = await query<Item>({
+    text: `
+        SELECT * FROM items
+        WHERE id in (${vars})
+        `,
+    values: ids,
+  });
+
+  return queryResult.rows;
 };
 
 // Create item
