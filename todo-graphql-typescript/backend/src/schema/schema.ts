@@ -1,4 +1,3 @@
-import { Category } from "./../generated/graphql";
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
@@ -19,6 +18,7 @@ export const typeDefs = gql`
   }
   type Query {
     allItems: [Item]!
+    allCategories: [Category]!
     item(id: ID!): Item
     itemsByName(name: String!): [Item]!
     category(id: ID!): Category

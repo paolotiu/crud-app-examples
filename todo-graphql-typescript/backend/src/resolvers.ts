@@ -3,7 +3,7 @@ import * as queries from "./util/queries";
 
 export const resolvers: Resolvers = {
   Category: {
-    items: ({ id }) => queries.allItemsFromCategory(id),
+    items: ({ id }, _, ctx) => ctx.dataLoaders.categoryItemsLoader.load(id),
   },
   ItemAndCategory: {
     item: ({ item_id }) => queries.oneItemById(item_id),
@@ -15,6 +15,7 @@ export const resolvers: Resolvers = {
     itemsByName: async (_, { name }) => queries.getItemsByName(name),
     category: async (_, { id }) => queries.oneCategoryById(id),
     categoryByName: async (_, { name }) => queries.oneCategoryByName(name),
+    allCategories: async () => queries.allCategories(),
   },
   Mutation: {
     createItem: async (_, { name, price }) => queries.createItem(name, price),

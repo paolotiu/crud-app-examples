@@ -1,8 +1,18 @@
 import { Category, Item } from "./../../generated/graphql";
 import { query } from "../../db";
 import { ItemAndCategoryIDs } from "../../types/modelTypes";
+import { createVariablesString } from "../createVariablesString";
 
-// get al
+// get all categories
+export const allCategories = async () => {
+  const queryResult = await query<Category>({
+    text: `
+            SELECT * FROM categories;   
+        `,
+  });
+
+  return queryResult.rows;
+};
 
 // get category by Id
 export const oneCategoryById = async (id: string) => {
@@ -58,19 +68,18 @@ export const addItemToCategory = async (itemId: string, categoryId: string) => {
 };
 
 // Ger all items from the category
-export const allItemsFromCategory = async (categoryId: string) => {
-  const queryResult = await query<Item>(
-    {
-      text: `
-            SELECT * FROM items i 
-            WHERE i.id in (
-                SELECT ic.item_id FROM item_in_category ic
-                WHERE ic.category_id = $1
-            );
+export const allItemsFromCategory = async (ids: string[]) => {
+  const vars = createVariablesString(ids);
+  const queryResult = await query<Item & { category_id: string }>({
+    text: `
+            SELECT iic.category_id, i.id,
+            i.name, i.price
+            FROM item_in_category iic
+            INNER JOIN items i on i.id = iic.item_id
+            WHERE iic.category_id IN (${vars})
         `,
-    },
-    [categoryId]
-  );
+    values: ids,
+  });
   return queryResult.rows;
 };
 

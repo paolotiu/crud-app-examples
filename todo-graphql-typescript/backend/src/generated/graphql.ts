@@ -37,6 +37,7 @@ export type ItemAndCategory = {
 export type Query = {
   __typename?: 'Query';
   allItems: Array<Maybe<Item>>;
+  allCategories: Array<Maybe<Category>>;
   item?: Maybe<Item>;
   itemsByName: Array<Maybe<Item>>;
   category?: Maybe<Category>;
@@ -230,6 +231,7 @@ export type ItemAndCategoryResolvers<ContextType = any, ParentType extends Resol
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allItems?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
+  allCategories?: Resolver<Array<Maybe<ResolversTypes['Category']>>, ParentType, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryItemArgs, 'id'>>;
   itemsByName?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType, RequireFields<QueryItemsByNameArgs, 'name'>>;
   category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
