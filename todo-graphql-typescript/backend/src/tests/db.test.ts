@@ -6,8 +6,8 @@ let conn: Client | Pool;
 
 beforeAll(async () => {
   console.log("connecting");
-  conn = createPool(true);
-  await connectDb();
+  conn = createPool({ isTest: true });
+  await connectDb({ logQueries: false });
 });
 
 afterAll(async () => {
@@ -16,15 +16,6 @@ afterAll(async () => {
   CREATE SCHEMA public;`);
   await closePool();
 });
-
-const itemsQuery = `
-  query itemsQuery {
-    item(id: "2") {
-      id
-      name
-    }
-  }
-`;
 
 const createItemQuery = `
   mutation createItemMutation {
