@@ -1,5 +1,6 @@
 import { Resolvers } from "./generated/graphql";
 import * as queries from "./util/queries";
+import { categoriesById, oneItemById } from "./util/queries";
 
 export const resolvers: Resolvers = {
   Category: {
@@ -20,8 +21,19 @@ export const resolvers: Resolvers = {
   Mutation: {
     createItem: async (_, { data }) => queries.createItem(data),
     createCategory: async (_, { name }) => queries.createCategory(name),
-    addItemToCategory: async (_, { itemId, categoryId }) =>
-      queries.addItemToCategory(itemId, categoryId),
+    addItemToCategory: async (_, { itemId, categoryId }) => {
+      const res = await queries.addItemToCategory(itemId, categoryId);
+      const ids = res.reduce<{ itemId: string; categoryIds: string[] }>(
+        (prev, curr) => ({
+          ...prev,
+          categoryIds: [...prev.categoryIds, curr.category_id],
+        }),
+        { itemId: res[0].item_id, categoryIds: [] }
+      );
+      const item = await oneItemById(ids.itemId);
+      const categories = await categoriesById(ids.categoryIds);
+      return { item, categories };
+    },
 
     removeItemFromCategory: async (_, { itemId, categoryId }) =>
       queries.removeItemFromCategory(itemId, categoryId),

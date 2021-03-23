@@ -16,6 +16,11 @@ export const typeDefs = gql`
     item: Item
     category: Category
   }
+
+  type OneItemAndCategories {
+    item: Item
+    categories: [Category]
+  }
   type Query {
     allItems: [Item]!
     allCategories: [Category]!
@@ -36,7 +41,7 @@ export const typeDefs = gql`
     deleteItem(id: ID!): Item!
     createCategory(name: String!): Category!
     deleteCategory(id: ID!): Category!
-    addItemToCategory(itemId: ID!, categoryId: ID!): [ItemAndCategory]
+    addItemToCategory(itemId: ID!, categoryId: [ID!]!): OneItemAndCategories
     removeItemFromCategory(itemId: ID!, categoryId: ID!): Boolean!
   }
 `;

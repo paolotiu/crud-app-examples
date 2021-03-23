@@ -36,7 +36,7 @@ const startServer = async () => {
     tracing: true,
   });
   createPool({ isTest: false });
-  await connectDb({ logQueries: false });
+  await connectDb({ logQueries: true });
 
   app.use(compression());
   server.applyMiddleware({ app, path: "/graphql" });

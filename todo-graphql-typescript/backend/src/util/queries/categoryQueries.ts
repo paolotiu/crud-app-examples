@@ -40,6 +40,19 @@ export const oneCategoryByName = async (name: string) => {
   return queryResult.rows[0];
 };
 
+// multiple categories
+export const categoriesById = async (ids: string[]) => {
+  const queryResult = await query<Category>({
+    text: `
+      SELECT * FROM categories
+      WHERE id IN (${createVariablesString(ids)})
+    `,
+    values: ids,
+  });
+
+  return queryResult.rows;
+};
+
 // create category
 export const createCategory = async (name: string) => {
   const queryResult = await query<Category>({
