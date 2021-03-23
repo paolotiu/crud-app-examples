@@ -1,14 +1,27 @@
 import { checkQueryResult } from "./util/validateQueryResult";
-import pg, { Pool } from "pg";
+import pg, { Client, Pool } from "pg";
 
-const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "inventory",
-  password: "password",
-  port: 5433,
-});
-
+let pool: Pool | Client;
+export const createPool = (isTest = false) => {
+  if (isTest) {
+    pool = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "test",
+      password: "password",
+      port: 5433,
+    });
+  } else {
+    pool = new Pool({
+      user: "postgres",
+      host: "localhost",
+      database: "inventory",
+      password: "password",
+      port: 5433,
+    });
+  }
+  return pool;
+};
 // export query method to a function
 export const query = <ReturnType>(
   textOrQueryConfig: string | pg.QueryConfig,
@@ -41,23 +54,32 @@ const initiateDb = async () => {
   );
 };
 
-export const connectDb = async () => {
+export const connectDb = async (logQueries = false) => {
   await pool.connect();
 
-  const oldPoolQuery = pool.query;
+  if (logQueries) {
+    const oldPoolQuery = pool.query;
 
-  // Log queries
-  // @ts-ignore
-  pool.query = (
-    ...args: [
-      queryText: string,
-      values: any[],
-      callback: (err: Error, result: pg.QueryResult<pg.QueryResultRow>) => void
-    ]
-  ) => {
-    console.log("QUERY", args);
-    return oldPoolQuery.apply(pool, args);
-  };
+    // Log queries
+    // @ts-ignore
+    pool.query = (
+      ...args: [
+        queryText: string,
+        values: any[],
+        callback: (
+          err: Error,
+          result: pg.QueryResult<pg.QueryResultRow>
+        ) => void
+      ]
+    ) => {
+      console.log("QUERY", args);
+      return oldPoolQuery.apply(pool, args);
+    };
+  }
   await initiateDb();
   await pool.query("SELECT 1 + 1;");
+};
+
+export const closePool = async () => {
+  await pool.end();
 };

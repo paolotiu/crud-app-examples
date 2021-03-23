@@ -2,7 +2,7 @@ import { resolvers } from "./resolvers";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/schema";
 import express from "express";
-import { connectDb } from "./db";
+import { connectDb, createPool } from "./db";
 import compression from "compression";
 import DataLoader from "dataloader";
 import { allItemsFromCategory } from "./util/queries";
@@ -35,7 +35,7 @@ const startServer = async () => {
     },
     tracing: true,
   });
-
+  createPool();
   await connectDb();
 
   app.use(compression());
