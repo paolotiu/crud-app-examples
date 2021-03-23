@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "concurrently \"nodemon src/index.ts\" \"yarn generate --watch\"",
-    "generate": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@types/compression": "^1.7.0",

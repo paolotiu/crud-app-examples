@@ -63,6 +63,28 @@ export const createItem = async (data: {
   return queryResult.rows[0];
 };
 
+// Delete item
+export const deleteItem = async (id: string) => {
+  // Delete all category-item raeltionships
+  await query({
+    text: `
+      DELETE FROM item_in_category 
+      WHERE item_id = $1
+    `,
+    values: [id],
+  });
+
+  const queryResult = await query<Item>({
+    text: `
+      DELETE FROM items
+      WHERE id = $1 
+      RETURNING *;
+    `,
+    values: [id],
+  });
+  return queryResult.rows[0];
+};
+
 // Get item(s) by name
 export const getItemsByName = async (name: string) => {
   const queryResult = await query<Item>({

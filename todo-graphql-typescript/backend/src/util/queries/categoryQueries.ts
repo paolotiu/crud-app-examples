@@ -141,6 +141,15 @@ export const removeItemFromCategory = async (
 
 // Delete a category
 export const deleteCategory = async (categoryId: string) => {
+  // delete relationships with item in that category
+  await query({
+    text: `
+      DELETE FROM item_in_category
+      WHERE category_id = $1;
+    `,
+    values: [categoryId],
+  });
+
   const queryResult = await query<Category>({
     text: `
             DELETE FROM categories

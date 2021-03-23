@@ -5,7 +5,6 @@ import { graphqlTestCall } from "./graphqlTestCall";
 let conn: Client | Pool;
 
 beforeAll(async () => {
-  console.log("connecting");
   conn = createPool({ isTest: true });
   await connectDb({ logQueries: false });
 });
@@ -17,28 +16,92 @@ afterAll(async () => {
   await closePool();
 });
 
-const createItemQuery = `
-  mutation createItemMutation {
-      createItem(data: {name: "new item", price: 900}){
-          name
-          price 
-      }
-  }
-`;
 const createCategoryQuery = `
-    mutation createCategoryMutation ($name: String!) {
+    mutation createCategoryAndAddItemMutation ($name: String!) {
         createCategory(name: $name ){
             name
         }
     }
 `;
-test("Creating an item returns the item itself", async () => {
-  const res = await graphqlTestCall(createItemQuery);
-  expect(res.data).toEqual({ createItem: { name: "new item", price: 900 } });
-});
 
-test("Creating a category return the category itself", async () => {
-  const vars = { name: "TEST" };
-  const res = await graphqlTestCall(createCategoryQuery, vars);
-  expect(res.data).toEqual({ createCategory: { name: "TEST" } });
+const createItemQuery = `
+  mutation createItemMutation ($name: String!, $price: Int!){
+      createItem(data: {name: $name, price: $price }){
+          name
+          price 
+          id
+      }
+  }
+`;
+
+const getCategoryIdQuery = `
+  query getCategoryId ($name: String!) {
+      categoryByName(name: $name){
+        id
+      }
+  }
+`;
+const addItemToCategoryQuery = `
+  mutation addItemToCategory ($itemId: ID!, $categoryId: [ID!]!){
+      addItemToCategory(itemId: $itemId, categoryId: $categoryId){
+        item{
+          id
+        }
+      }
+  }
+`;
+
+const deleteItemAndCategoryMutation = `
+  mutation deleteItemAndCategory ($itemId: ID!, $categoryId: ID!){
+    deleteItem(id: $itemId){
+      id
+    }
+
+    deleteCategory(id: $categoryId){
+      id
+    }
+  }
+`;
+
+describe("CRUD-ing", () => {
+  let iid: string, catId: string;
+  const testItem = { name: "Test Item", price: 1000 };
+  const testCategory = { name: "TestCategory" };
+  test("Creating an item returns the item itself", async () => {
+    const res = await graphqlTestCall(createItemQuery, testItem);
+    iid = res.data?.createItem.id;
+    expect(res.data).toEqual({
+      createItem: { name: testItem.name, price: testItem.price, id: iid },
+    });
+  });
+
+  test("Creating a category return the category itself", async () => {
+    const res = await graphqlTestCall(createCategoryQuery, testCategory);
+    expect(res.data).toEqual({ createCategory: { name: testCategory.name } });
+  });
+
+  test("Adding an item to a category", async () => {
+    catId = await graphqlTestCall(getCategoryIdQuery, testCategory).then(
+      (res) => res.data?.categoryByName.id
+    );
+    const res = await graphqlTestCall(addItemToCategoryQuery, {
+      itemId: iid,
+      categoryId: [catId],
+    });
+    expect(res.data).toEqual({ addItemToCategory: { item: { id: iid } } });
+  });
+
+  test("Deleting the item and category", async () => {
+    await graphqlTestCall(deleteItemAndCategoryMutation, {
+      itemId: iid,
+      categoryId: catId,
+    });
+    const itemQ = await conn.query(`SELECT * FROM items WHERE id = ${iid}
+     `);
+    const catQ = await conn.query(
+      `SELECT * FROM categories WHERE id = ${catId}`
+    );
+    expect(itemQ.rows.length).toBe(0);
+    expect(catQ.rows.length).toBe(0);
+  });
 });

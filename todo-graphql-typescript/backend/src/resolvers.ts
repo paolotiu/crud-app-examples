@@ -38,5 +38,6 @@ export const resolvers: Resolvers = {
     removeItemFromCategory: async (_, { itemId, categoryId }) =>
       queries.removeItemFromCategory(itemId, categoryId),
     deleteCategory: (_, { id }) => queries.deleteCategory(id),
+    deleteItem: (_, { id }) => queries.deleteItem(id),
   },
 };
