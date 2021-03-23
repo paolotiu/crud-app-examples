@@ -2,7 +2,12 @@ import { checkQueryResult } from "./util/validateQueryResult";
 import pg, { Client, Pool } from "pg";
 
 let pool: Pool | Client;
-export const createPool = (isTest = false) => {
+
+interface CreatePoolOptions {
+  isTest?: boolean;
+}
+
+export const createPool = ({ isTest = false }: CreatePoolOptions) => {
   if (isTest) {
     pool = new Client({
       user: "postgres",
@@ -54,7 +59,10 @@ const initiateDb = async () => {
   );
 };
 
-export const connectDb = async (logQueries = false) => {
+interface ConnectDBOptions {
+  logQueries?: boolean;
+}
+export const connectDb = async ({ logQueries = false }: ConnectDBOptions) => {
   await pool.connect();
 
   if (logQueries) {

@@ -7,5 +7,5 @@ import { resolvers } from "../resolvers";
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 export const graphqlTestCall = async (query: any, variables?: any) => {
-  return graphql(schema, query, undefined, variables);
+  return graphql(schema, query, undefined, {}, variables);
 };
