@@ -1,3 +1,4 @@
+import { addItemToCategory } from "./categoryQueries";
 import { Item } from "./../../generated/graphql";
 import { query } from "../../db";
 import { createVariablesString } from "../createVariablesString";
@@ -43,9 +44,9 @@ export const itemsById = async (ids: string[]) => {
 export const createItem = async (data: {
   name: string;
   price: number;
-  category?: string | null;
+  categoryId?: string[] | null;
 }) => {
-  const { name, price, category } = data;
+  const { name, price, categoryId } = data;
   const queryResult = await query<Item>({
     text: `INSERT INTO items(name, price)  
            values ($1, $2) 
@@ -54,6 +55,10 @@ export const createItem = async (data: {
 
     values: [name, price],
   });
+
+  if (categoryId) {
+    addItemToCategory(queryResult.rows[0].id, categoryId);
+  }
 
   return queryResult.rows[0];
 };

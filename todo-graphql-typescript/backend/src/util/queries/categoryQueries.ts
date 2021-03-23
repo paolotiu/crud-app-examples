@@ -2,7 +2,8 @@ import { Category, Item } from "./../../generated/graphql";
 import { query } from "../../db";
 import { ItemAndCategoryIDs } from "../../types/modelTypes";
 import { createVariablesString } from "../createVariablesString";
-
+import { multiplyValue } from "../multiplyValue";
+import { expand } from "../expand";
 // get all categories
 export const allCategories = async () => {
   const queryResult = await query<Category>({
@@ -54,17 +55,41 @@ export const createCategory = async (name: string) => {
 };
 
 // add an item to the category
-export const addItemToCategory = async (itemId: string, categoryId: string) => {
-  const queryResult = await query<ItemAndCategoryIDs>({
-    text: `
+export const addItemToCategory = async (
+  itemId: string,
+  categoryId: string | string[]
+) => {
+  if (Array.isArray(categoryId)) {
+    // If we get multiple categroyIds
+    // ex. itemId = 10 , categoryId = [1,2,3,4]
+    // values = [10, 1, 10, 2, 10, 3, 10, 4]
+    const values = multiplyValue(itemId, categoryId);
+
+    const queryResult = await query<ItemAndCategoryIDs>({
+      text: `
+        INSERT INTO item_in_category (item_id, category_id)
+        VALUES ${expand(categoryId.length, 2)}
+        RETURNING *;
+    `,
+      values,
+    });
+
+    return queryResult.rows;
+  } else {
+    // This isn't the best implementation,
+    // Future refactors could delegate the switching in our multiplyValues function
+
+    const queryResult = await query<ItemAndCategoryIDs>({
+      text: `
         INSERT INTO item_in_category (item_id, category_id)
         VALUES ($1, $2)
         RETURNING *;
     `,
-    values: [itemId, categoryId],
-  });
+      values: [itemId, categoryId],
+    });
 
-  return queryResult.rows[0];
+    return queryResult.rows;
+  }
 };
 
 // Ger all items from the category

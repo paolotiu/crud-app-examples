@@ -24,10 +24,11 @@ export const typeDefs = gql`
     category(id: ID!): Category
     categoryByName(name: String!): Category
   }
+
   input CreateItemInput {
     name: String!
     price: Int!
-    category: String
+    categoryId: [ID!]
   }
 
   type Mutation {
@@ -35,7 +36,7 @@ export const typeDefs = gql`
     deleteItem(id: ID!): Item!
     createCategory(name: String!): Category!
     deleteCategory(id: ID!): Category!
-    addItemToCategory(itemId: ID!, categoryId: ID!): ItemAndCategory
+    addItemToCategory(itemId: ID!, categoryId: ID!): [ItemAndCategory]
     removeItemFromCategory(itemId: ID!, categoryId: ID!): Boolean!
   }
 `;
