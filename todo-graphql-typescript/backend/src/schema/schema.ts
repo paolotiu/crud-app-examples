@@ -46,7 +46,7 @@ export const typeDefs = gql`
 
   input UpdateCatetgoryInput {
     id: ID!
-    newName: String
+    newName: String!
   }
 
   type Mutation {

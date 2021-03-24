@@ -1,4 +1,8 @@
-import { Category, Item } from "./../../generated/graphql";
+import {
+  Category,
+  Item,
+  UpdateCatetgoryInput,
+} from "./../../generated/graphql";
 import { query } from "../../db";
 import { ItemAndCategoryIDs } from "../../types/modelTypes";
 import { createVariablesString } from "../createVariablesString";
@@ -159,5 +163,19 @@ export const deleteCategory = async (categoryId: string) => {
     values: [categoryId],
   });
 
+  return queryResult.rows[0];
+};
+
+// Update catgory
+export const updateCategory = async ({ id, newName }: UpdateCatetgoryInput) => {
+  const queryResult = await query<Category>({
+    text: `
+    UPDATE categories
+    SET name = $2
+    WHERE id = $1
+    RETURNING *;
+   `,
+    values: [id, newName],
+  });
   return queryResult.rows[0];
 };

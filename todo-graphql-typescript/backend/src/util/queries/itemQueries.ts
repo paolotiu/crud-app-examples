@@ -1,5 +1,5 @@
 import { addItemToCategory } from "./categoryQueries";
-import { Item } from "./../../generated/graphql";
+import { Item, UpdateItemInput } from "./../../generated/graphql";
 import { query } from "../../db";
 import { createVariablesString } from "../createVariablesString";
 import { createSetStatement } from "../createSetStatement";
@@ -101,12 +101,11 @@ export const getItemsByName = async (name: string) => {
 };
 
 // Update item
-interface UpdateItemData {
-  id: string;
-  newName?: string | null;
-  newPrice?: number | null;
-}
-export const updateItem = async ({ id, newName, newPrice }: UpdateItemData) => {
+export const updateItem = async ({
+  id,
+  newName,
+  newPrice,
+}: UpdateItemInput) => {
   if (!newName && typeof newPrice === "undefined") {
     throw new UserInputError("Input a new name or price");
   }

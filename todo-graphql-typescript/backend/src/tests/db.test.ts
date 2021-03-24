@@ -1,6 +1,7 @@
 import { closePool, connectDb, createPool } from "./../db";
 import { Client, Pool } from "pg";
 import { graphqlTestCall } from "./graphqlTestCall";
+import { ApolloError } from "apollo-server-errors";
 
 let conn: Client | Pool;
 
@@ -72,6 +73,16 @@ const updateItemMutation = `
         }
     }
 `;
+
+const updateCategoryMutation = `
+    mutation updateCategory($id: ID!, $name: String!){
+      updateCategory(data: {id: $id, newName: $name}){
+        id
+        name
+      }
+    }
+`;
+
 describe("CRUD-ing", () => {
   let iid: string, catId: string;
   const testItem = { name: "Test Item", price: 1000 };
@@ -106,6 +117,18 @@ describe("CRUD-ing", () => {
     expect(res.data).toEqual({ updateItem: updateParams });
   });
 
+  test("Updating a category", async () => {
+    const updateParams = { id: catId, name: "New cat name" };
+    const res = await graphqlTestCall(updateCategoryMutation, updateParams);
+    expect(res.data).toEqual({ updateCategory: updateParams });
+  });
+
+  test("Bad item update", async () => {
+    const badUpdateParams = { name: 29, price: "2", id: iid };
+    const res = await graphqlTestCall(updateItemMutation, badUpdateParams);
+    expect(res.errors).toBeTruthy();
+  });
+
   test("Deleting the item and category", async () => {
     await graphqlTestCall(deleteItemAndCategoryMutation, {
       itemId: iid,
@@ -120,3 +143,5 @@ describe("CRUD-ing", () => {
     expect(catQ.rows.length).toBe(0);
   });
 });
+
+describe("Expects bad inputs", () => {});

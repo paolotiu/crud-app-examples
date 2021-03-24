@@ -8,7 +8,7 @@ export const createSetStatement = (
     count = 0;
   const keys = Object.keys(data);
   for (let i = 0; i < keys.length; i++) {
-    if (typeof data[keys[i]] === "undefined") {
+    if (typeof data[keys[i]] === "undefined" || data[keys[i]] === null) {
       continue;
     }
     if (count === 0) {

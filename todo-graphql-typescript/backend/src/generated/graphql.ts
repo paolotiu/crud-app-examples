@@ -84,7 +84,7 @@ export type UpdateItemInput = {
 
 export type UpdateCatetgoryInput = {
   id: Scalars['ID'];
-  newName?: Maybe<Scalars['String']>;
+  newName: Scalars['String'];
 };
 
 export type Mutation = {
