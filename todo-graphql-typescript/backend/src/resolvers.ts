@@ -39,5 +39,6 @@ export const resolvers: Resolvers = {
       queries.removeItemFromCategory(itemId, categoryId),
     deleteCategory: (_, { id }) => queries.deleteCategory(id),
     deleteItem: (_, { id }) => queries.deleteItem(id),
+    updateItem: (_, { data }) => queries.updateItem(data),
   },
 };

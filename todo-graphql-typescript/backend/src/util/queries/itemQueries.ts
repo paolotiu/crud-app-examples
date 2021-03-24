@@ -2,6 +2,8 @@ import { addItemToCategory } from "./categoryQueries";
 import { Item } from "./../../generated/graphql";
 import { query } from "../../db";
 import { createVariablesString } from "../createVariablesString";
+import { createSetStatement } from "../createSetStatement";
+import { UserInputError } from "apollo-server-errors";
 
 // get all items
 export const allItems = async () => {
@@ -96,4 +98,34 @@ export const getItemsByName = async (name: string) => {
   });
 
   return queryResult.rows;
+};
+
+// Update item
+interface UpdateItemData {
+  id: string;
+  newName?: string | null;
+  newPrice?: number | null;
+}
+export const updateItem = async ({ id, newName, newPrice }: UpdateItemData) => {
+  if (!newName && typeof newPrice === "undefined") {
+    throw new UserInputError("Input a new name or price");
+  }
+  const vals =
+    newName && newPrice
+      ? [id, newName, newPrice]
+      : newName
+      ? [id, newName]
+      : [id, newPrice];
+
+  const queryResult = await query<Item>({
+    text: `
+      UPDATE items
+      SET ${createSetStatement({ name: newName, price: newPrice }, 2)} 
+      WHERE id = $1
+      RETURNING *;
+    `,
+    values: vals,
+  });
+
+  return queryResult.rows[0];
 };

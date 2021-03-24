@@ -63,6 +63,15 @@ const deleteItemAndCategoryMutation = `
   }
 `;
 
+const updateItemMutation = `  
+    mutation updateItem($name: String, $price: Int, $id: ID!){
+        updateItem(data: {id: $id, newName: $name, newPrice: $price}){
+          name
+          id
+          price
+        }
+    }
+`;
 describe("CRUD-ing", () => {
   let iid: string, catId: string;
   const testItem = { name: "Test Item", price: 1000 };
@@ -89,6 +98,12 @@ describe("CRUD-ing", () => {
       categoryId: [catId],
     });
     expect(res.data).toEqual({ addItemToCategory: { item: { id: iid } } });
+  });
+
+  test("Updating an item", async () => {
+    const updateParams = { id: iid, name: "new name", price: 920 };
+    const res = await graphqlTestCall(updateItemMutation, updateParams);
+    expect(res.data).toEqual({ updateItem: updateParams });
   });
 
   test("Deleting the item and category", async () => {

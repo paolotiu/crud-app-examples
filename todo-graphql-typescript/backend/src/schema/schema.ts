@@ -6,6 +6,7 @@ export const typeDefs = gql`
     name: String!
     items: [Item]!
   }
+
   type Item {
     id: ID!
     name: String!
@@ -21,6 +22,7 @@ export const typeDefs = gql`
     item: Item
     categories: [Category]
   }
+
   type Query {
     allItems: [Item]!
     allCategories: [Category]!
@@ -36,6 +38,17 @@ export const typeDefs = gql`
     categoryId: [ID!]
   }
 
+  input UpdateItemInput {
+    id: ID!
+    newName: String
+    newPrice: Int
+  }
+
+  input UpdateCatetgoryInput {
+    id: ID!
+    newName: String
+  }
+
   type Mutation {
     createItem(data: CreateItemInput!): Item!
     deleteItem(id: ID!): Item!
@@ -43,5 +56,7 @@ export const typeDefs = gql`
     deleteCategory(id: ID!): Category!
     addItemToCategory(itemId: ID!, categoryId: [ID!]!): OneItemAndCategories
     removeItemFromCategory(itemId: ID!, categoryId: ID!): Boolean!
+    updateItem(data: UpdateItemInput!): Item!
+    updateCategory(data: UpdateCatetgoryInput!): Category!
   }
 `;
