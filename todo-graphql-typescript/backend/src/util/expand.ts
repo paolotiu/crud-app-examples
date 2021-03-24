@@ -5,10 +5,10 @@ export function expand(rowCount: number, columnCount: number, startAt = 1) {
   return Array(rowCount)
     .fill(0)
     .map(
-      (v) =>
+      () =>
         `(${Array(columnCount)
           .fill(0)
-          .map((v) => `$${index++}`)
+          .map(() => `$${index++}`)
           .join(", ")})`
     )
     .join(", ");
