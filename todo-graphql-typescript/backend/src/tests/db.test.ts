@@ -1,7 +1,6 @@
 import { closePool, connectDb, createPool } from "./../db";
 import { Client, Pool } from "pg";
 import { graphqlTestCall } from "./graphqlTestCall";
-import { ApolloError } from "apollo-server-errors";
 
 let conn: Client | Pool;
 

@@ -4,6 +4,7 @@ documents: null
 generates:
   src/generated/graphql.ts:
     config: 
+      useIndexSignature: true
       mappers:
         ItemAndCategory: ../types/modelTypes#ItemAndCategoryIDs
     plugins:
