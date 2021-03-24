@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "tsc && node ./dist",
     "dev": "concurrently \"nodemon src/index.ts\" \"yarn generate --watch\"",
     "generate": "graphql-codegen --config codegen.yml",
     "test": "jest",
