@@ -63,8 +63,6 @@ interface ConnectDBOptions {
   logQueries?: boolean;
 }
 export const connectDb = async ({ logQueries = false }: ConnectDBOptions) => {
-  await pool.connect();
-
   if (logQueries) {
     const oldPoolQuery = pool.query;
 
