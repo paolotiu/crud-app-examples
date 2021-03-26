@@ -1,5 +1,5 @@
 import { addItemToCategory } from "./categoryQueries";
-import { Item, UpdateItemInput } from "./../../generated/graphql";
+import { Category, Item, UpdateItemInput } from "./../../generated/graphql";
 import { query } from "../../db";
 import { createVariablesString } from "../createVariablesString";
 import { createSetStatement } from "../createSetStatement";
@@ -127,4 +127,19 @@ export const updateItem = async ({
   });
 
   return queryResult.rows[0];
+};
+
+// Get item categories
+export const getItemCategories = async (id: string) => {
+  const queryResult = await query<Category>({
+    text: `
+      SELECT iic.category_id id, c.name
+      FROM item_in_category iic
+      INNER JOIN categories c on iic.category_id = c.id
+      WHERE iic.item_id = $1 
+    `,
+    values: [id],
+  });
+  console.log(queryResult.rows);
+  return queryResult.rows;
 };

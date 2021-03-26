@@ -26,6 +26,7 @@ export type Item = {
   id: Scalars['ID'];
   name: Scalars['String'];
   price: Scalars['Int'];
+  categories?: Maybe<Array<Maybe<Category>>>;
 };
 
 export type ItemAndCategory = {
@@ -263,6 +264,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

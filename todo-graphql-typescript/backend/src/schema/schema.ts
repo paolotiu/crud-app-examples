@@ -11,6 +11,7 @@ export const typeDefs = gql`
     id: ID!
     name: String!
     price: Int!
+    categories: [Category]
   }
 
   type ItemAndCategory {

@@ -10,6 +10,9 @@ export const resolvers: Resolvers = {
     item: ({ item_id }) => queries.oneItemById(item_id),
     category: ({ category_id }) => queries.oneCategoryById(category_id),
   },
+  Item: {
+    categories: async ({ id }) => queries.getItemCategories(id),
+  },
   Query: {
     allItems: async () => queries.allItems(),
     item: async (_, { id }) => queries.oneItemById(id),
